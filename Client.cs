@@ -17,7 +17,7 @@ public class Client
         private int id;
         private NetworkStream _networkStream;
         private byte[] receiveBuffer;
-        private EventCreator eventMessage;
+        private Packet eventPacket;
 
         public Tcp(int _id)
         {
@@ -31,19 +31,19 @@ public class Client
             socket.SendBufferSize = dataBufferSize;
             _networkStream = socket.GetStream();
             receiveBuffer = new byte[dataBufferSize];
-            eventMessage = new EventCreator();
+            eventPacket = new Packet();
             serverlist = new Serverlist();
             _networkStream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             MessageSend.OnInitConnection(id);
         }
 
-        public void SendData(EventCreator events)
+        public void SendData(Packet packet)
         {
             try
             {
                 if (socket != null)
                 {
-                    _networkStream.BeginWrite(events.TranslateToByte(), 0, events.Length(), null, null);
+                    _networkStream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
                 }
             }
             catch (Exception e)
@@ -67,7 +67,7 @@ public class Client
 
                 byte[] data = new byte[messageByteLength];
                 Array.Copy(receiveBuffer, data, messageByteLength);
-                HandleData(receiveBuffer, eventMessage);
+                eventPacket.Reset(HandleData(data));
                 _networkStream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
             catch (Exception ex)
@@ -78,81 +78,50 @@ public class Client
             }
         }
 
-        private void HandleData(byte[] _receiveBuffer, EventCreator eventCreator)
+        private bool HandleData(byte[] _data)
         {
-            eventCreator.SetBytes(_receiveBuffer);
-            string player_name;
-            string server_name;
-            string prefab_name;
-            int server_id;
-            int unit_id;
+            int _packetLength = 0;
 
-            Vector3 pos;
-            Quaternion rota;
+            eventPacket.SetBytes(_data);
 
-            string serverCall = eventCreator.ReadStringRange();
-            int sender_id = eventCreator.ReadIntRange();
-            int receiver_id;
-
-            switch (serverCall)
+            if (eventPacket.UnreadLength() >= 4)
             {
-                case "welcome":
-                    Console.WriteLine(eventCreator.ReadStringRange());
-                    break;
-                case "broadcast":
-                    break;
-                case "start_game":
-                    int secondplayer_id = eventCreator.ReadIntRange();
-                    MessageSend.StartGame(sender_id, secondplayer_id);
-                    serverlist.GameStarted(sender_id);
-                    break;
-                case "addserver":
-                    player_name = eventCreator.ReadStringRange();
-                    server_name = eventCreator.ReadStringRange();
-                    serverlist.CreateServer(sender_id, player_name, server_name);
-                    break;
-                case "removeserver":
-                    serverlist.CloseServer(sender_id);
-                    break;
-                case "joinserver":
-                    player_name = eventCreator.ReadStringRange();
-                    server_id = eventCreator.ReadIntRange();
-                    serverlist.JoinServer(server_id, sender_id, player_name);
-                    MessageSend.SendUserJoinedLobbyMessage(server_id, sender_id, player_name);
-                    break;
-                case "leaveserver":
-                    server_id = eventCreator.ReadIntRange();
-                    serverlist.LeaveServer(server_id, sender_id);
-                    break;
-                case "receiveservers":
-                    MessageSend.SendServerList(sender_id, serverlist.ReturnServerList());
-                    break;
-                case "unit_created":
-                    server_id = eventCreator.ReadIntRange();
-                    receiver_id = eventCreator.ReadIntRange();
-                    var name = eventCreator.ReadStringRange();
-                    unit_id =eventCreator.ReadIntRange();
-                    var hp = eventCreator.ReadIntRange();
-                    var dmg = eventCreator.ReadIntRange();
-                    var ma = eventCreator.ReadIntRange();
-                    var ra = eventCreator.ReadIntRange();
-                    pos = eventCreator.ReadVector3Range();
-                    rota = eventCreator.ReadQuaternionRange();
-                    serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender_id].AddUnit(receiver_id,unit_id,name,pos,rota,hp,dmg,ra,ma);
-                    break;
-                case "broadcast_pos":
-                    receiver_id = eventCreator.ReadIntRange();
-                    server_id = eventCreator.ReadIntRange();
-                    unit_id =eventCreator.ReadIntRange();
-                    pos = eventCreator.ReadVector3Range();
-                    rota = eventCreator.ReadQuaternionRange();
-                    serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender_id]
-                        .UpdateUnitPosition(receiver_id, unit_id,pos,rota);
-                    Console.WriteLine("receiver: {0} server: {1} unit_id: {2} x: {3} y: {4} z: {5}",receiver_id,server_id,unit_id,pos.X,pos.Y,pos.Z);
-                    break;
+                _packetLength = eventPacket.ReadInt();
+                if (_packetLength <= 0)
+                {
+                    return true;
+                }
             }
 
-            eventCreator.ClearBuffers();
+            while (_packetLength > 0 && _packetLength <= eventPacket.UnreadLength())
+            {
+                byte[] _packetBytes = eventPacket.ReadBytes(_packetLength);
+                ThreadManager.ExecuteOnMainThread(() =>
+                {
+                    using (Packet _packet = new Packet(_packetBytes))
+                    {
+                        int _packetId = _packet.ReadInt();
+                        RtsServer.packetHandler[_packetId](id, _packet);
+                    }
+                });
+
+                _packetLength = 0;
+                if (eventPacket.UnreadLength() >= 4)
+                {
+                    _packetLength = eventPacket.ReadInt();
+                    if (_packetLength <= 0)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            if (_packetLength <= 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public void Disconnect()

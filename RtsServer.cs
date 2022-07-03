@@ -10,6 +10,10 @@ internal class RtsServer
     public static Dictionary<int, Client> Clients;
     private static TcpListener _tcpListener;
 
+    public delegate void PacketHandler(int sender, Packet packet);
+
+    public static Dictionary<int, PacketHandler> packetHandler;
+
     public static void Start(int playersAmount, int port)
     {
         Clients = new Dictionary<int, Client>();
@@ -44,5 +48,18 @@ internal class RtsServer
         {
             Clients.Add(i, new Client(i));
         }
+
+        packetHandler = new Dictionary<int, PacketHandler>()
+        {
+            {(int) ClientPackets.welcomeReceived, ServerMessageHandler.WelcomeReceived},
+            {(int) ClientPackets.addServer, ServerMessageHandler.AddServerToList},
+            {(int) ClientPackets.serverlistRequested, ServerMessageHandler.PlayerRequestedServerlist},
+            {(int) ClientPackets.playerJoined, ServerMessageHandler.PlayerJoinedServer},
+            {(int) ClientPackets.playerLeft, ServerMessageHandler.PlayerLeftServer},
+            {(int) ClientPackets.removeServer, ServerMessageHandler.RemoveServerFromList},
+            {(int) ClientPackets.gameStarted, ServerMessageHandler.StartGame},
+            {(int) ClientPackets.playerMovement, ServerMessageHandler.MoveUnit},
+            {(int) ClientPackets.playerSpawned, ServerMessageHandler.PlayerCreatedUnit},
+        };
     }
 }
