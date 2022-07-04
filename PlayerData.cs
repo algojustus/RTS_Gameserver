@@ -69,11 +69,11 @@ public class PlayerData
         //Send broadcast to both players
     }
 
-    public void UpdateUnitPosition(int receiver_id, int unit_id, Vector3 pos, Quaternion rota)
+    public void UpdateUnitPosition(int receiver_id, int unit_id, Vector3 pos)
     {
+        Console.WriteLine("Unit pos received: {0}",pos);
         UnitData unit = UnitDictionary[unit_id];
         unit.position = pos;
-        unit.rotation = rota;
-        MessageSend.SendUnitPos(receiver_id, unit_id, pos, rota);
+        MessageSend.SendUnitPos(receiver_id, unit_id, pos);
     }
 }

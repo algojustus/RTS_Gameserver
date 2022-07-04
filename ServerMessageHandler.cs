@@ -69,15 +69,14 @@ public class ServerMessageHandler
 
     public static void MoveUnit(int sender, Packet packet)
     {
-        //         case "broadcast_pos":
-//             receiver_id = packet.ReadIntRange();
-//             server_id = packet.ReadIntRange();
-//             unit_id =packet.ReadIntRange();
-//             pos = packet.ReadVector3Range();
-//             rota = packet.ReadQuaternionRange();
-//             serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender_id]
-//                 .UpdateUnitPosition(receiver_id, unit_id,pos,rota);
-//             Console.WriteLine("receiver: {0} server: {1} unit_id: {2} x: {3} y: {4} z: {5}",receiver_id,server_id,unit_id,pos.X,pos.Y,pos.Z);
+        int receiver_id = packet.ReadInt();
+        int server_id = packet.ReadInt();
+        int unit_id = packet.ReadInt();
+        Vector3 pos = packet.ReadVector3();
+        Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender]
+            .UpdateUnitPosition(receiver_id, unit_id, pos);
+        Console.WriteLine("receiver: {0} server: {1} unit_id: {2} x: {3} y: {4} z: {5}", receiver_id, server_id,
+            unit_id, pos.X, pos.Y, pos.Z);                                                 
     }
 
     public static void PlayerRequestedServerlist(int sender, Packet packet)

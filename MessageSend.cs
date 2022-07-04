@@ -118,13 +118,13 @@ public class MessageSend
         Console.WriteLine("Unit created and now broadcasting to other player");
     }
 
-    public static void SendUnitPos(int receiverId, int unitId, Vector3 pos, Quaternion rota)
+    public static void SendUnitPos(int receiverId, int unitId, Vector3 pos)
     {
+        Console.WriteLine("Sending unit pos");
         using (Packet packet = new Packet((int) ServerPackets.playerPosition))
         {
             packet.Write(unitId);
             packet.Write(pos);
-            packet.Write(rota);
             SendTcpMessage(receiverId, packet);
         }
     }
