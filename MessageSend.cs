@@ -128,4 +128,16 @@ public class MessageSend
             SendTcpMessage(receiverId, packet);
         }
     }
+    public static void SendBuildingCreated(int receiverId, BuildingData buildingData)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.spawnBuilding))
+        {
+            packet.Write(buildingData.id);
+            packet.Write(buildingData.prefabname);
+            packet.Write(buildingData.position);
+            packet.Write(buildingData.rotation);
+            SendTcpMessage(receiverId, packet);
+        }
+        Console.WriteLine("Building created and now broadcasting to other player");
+    }
 }

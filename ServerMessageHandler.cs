@@ -67,6 +67,22 @@ public class ServerMessageHandler
         Console.WriteLine("UnitCreated");
     }
 
+    public static void PlayerCreatedBuilding(int sender, Packet packet)
+    {
+        int server_id = packet.ReadInt();
+        int receiver_id = packet.ReadInt();
+        int building_id = packet.ReadInt();
+        var name = packet.ReadString();
+        Vector3 pos = packet.ReadVector3();
+        Quaternion rota = packet.ReadQuaternion();
+        var hp = packet.ReadInt();
+        var dmg = packet.ReadInt();
+        var ma = packet.ReadInt();
+        var ra = packet.ReadInt();
+        Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender]
+            .AddBuilding(receiver_id,building_id,name,pos,rota,hp,ra,ma);
+        Console.WriteLine("BuildingCreated");
+    }
     public static void MoveUnit(int sender, Packet packet)
     {
         int receiver_id = packet.ReadInt();

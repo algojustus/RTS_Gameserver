@@ -20,14 +20,14 @@ public class PlayerData
         BuildingDictionary = new Dictionary<int, BuildingData>();
     }
 
-    public void AddBuilding(int building_id, string prefab_name, Vector3 spawnpos, Quaternion spawnrota, int hitpoints,
+    public void AddBuilding(int receiver_id,int building_id, string prefab_name, Vector3 spawnpos, Quaternion spawnrota, int hitpoints,
         int rangedResistance, int meleeResistance)
     {
         BuildingData building = new BuildingData(building_id, prefab_name, spawnpos, spawnrota, hitpoints,
             rangedResistance,
             meleeResistance);
         BuildingDictionary.Add(building_id, building);
-        //Send broadcast to both players
+        MessageSend.SendBuildingCreated(receiver_id,building);
     }
 
     public void DestroyBuilding(int building_id)

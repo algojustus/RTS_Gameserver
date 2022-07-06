@@ -60,6 +60,7 @@ internal class RtsServer
             {(int) ClientPackets.gameStarted, ServerMessageHandler.StartGame},
             {(int) ClientPackets.playerMovement, ServerMessageHandler.MoveUnit},
             {(int) ClientPackets.playerSpawned, ServerMessageHandler.PlayerCreatedUnit},
+            {(int) ClientPackets.spawnBuilding, ServerMessageHandler.PlayerCreatedBuilding}
         };
     }
 }
