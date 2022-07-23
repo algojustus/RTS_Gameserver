@@ -80,9 +80,10 @@ public class ServerMessageHandler
         var ma = packet.ReadInt();
         var ra = packet.ReadInt();
         Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender]
-            .AddBuilding(receiver_id,building_id,name,pos,rota,hp,ra,ma);
+            .AddBuilding(receiver_id, building_id, name, pos, rota, hp, ra, ma);
         Console.WriteLine("BuildingCreated");
     }
+
     public static void MoveUnit(int sender, Packet packet)
     {
         int receiver_id = packet.ReadInt();
@@ -92,12 +93,55 @@ public class ServerMessageHandler
         Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender]
             .UpdateUnitPosition(receiver_id, unit_id, pos);
         Console.WriteLine("receiver: {0} server: {1} unit_id: {2} x: {3} y: {4} z: {5}", receiver_id, server_id,
-            unit_id, pos.X, pos.Y, pos.Z);                                                 
+            unit_id, pos.X, pos.Y, pos.Z);
     }
 
     public static void PlayerRequestedServerlist(int sender, Packet packet)
     {
         MessageSend.SendServerList(sender, Client.serverlist.ReturnServerList());
         Console.WriteLine("RequestedServerlist");
+    }
+
+    public static void SetTeamColor(int sender, Packet packet)
+    {
+        int server_id = packet.ReadInt();
+        int player = packet.ReadInt();
+        //Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender].color = player;
+        int[] playerlist = new int[Client.serverlist.ServerlistDictionary[server_id].maxPlayers];
+        playerlist = Client.serverlist.ServerlistDictionary[server_id].FillPlayerList();
+        foreach (var id in playerlist)
+        {
+            if (id != sender && id != 0)
+                MessageSend.SetTeamColor(id, player);
+        }
+    }
+
+    public static void SetSettings(int sender, Packet packet)
+    {
+        int server_id = packet.ReadInt();
+        int max_player = packet.ReadInt();
+        int max_villagers = packet.ReadInt();
+        int startResource = packet.ReadInt();
+
+        Client.serverlist.ServerlistDictionary[server_id].maxPlayers = max_player;
+        Client.serverlist.ServerlistDictionary[server_id].maxUnits = max_villagers;
+        int[] playerlist = new int[Client.serverlist.ServerlistDictionary[server_id].maxPlayers];
+        playerlist = Client.serverlist.ServerlistDictionary[server_id].FillPlayerList();
+        foreach (var id in playerlist)
+        {
+            if (id != sender && id != 0)
+                MessageSend.SetSettingsForAll(id, max_player, max_villagers, startResource);
+        }
+    }
+
+    public static void PlayerIsBuilding(int sender, Packet packet)
+    {
+        int receiver_id = packet.ReadInt();
+        int server_id = packet.ReadInt();
+        int building_id = packet.ReadInt();
+        int multiplier = packet.ReadInt();
+        bool initialized = packet.ReadBool();
+        bool finished = packet.ReadBool();
+        MessageSend.BuildingIsBuild(sender,receiver_id,building_id,multiplier,initialized,finished);
     }
 }

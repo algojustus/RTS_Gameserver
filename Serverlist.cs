@@ -9,12 +9,16 @@ public class Serverlist
     public Dictionary<int, PlayerData> PlayerDictionary;
     public int player1_id;
     public int player2_id;
+    public int player3_id;
+    public int player4_id;
+    public int[] playerlist;
     public string server_name = "";
     public string player1_name = "";
     public string player2_name = "";
     public bool currently_ingame;
     public bool server_full;
-
+    public int maxPlayers = 2;
+    public int maxUnits;
     public Serverlist(int creator_id, string creator_name, string _server_name)
     {
         server_full = false;
@@ -28,7 +32,37 @@ public class Serverlist
         ServerlistDictionary = new Dictionary<int, Serverlist>();
         PlayerDictionary = new Dictionary<int, PlayerData>();
     }
+    
+    public int[] FillPlayerList()
+    {
+        playerlist = new int[maxPlayers];
+        for (int i = 1; i <= maxPlayers; i++)
+        {
+            playerlist[i - 1] = GetPlayerByNumber(i);
+        }
+        return playerlist;
+    }
 
+    private int GetPlayerByNumber(int i)
+    {
+        int currentPlayerId = 0;
+        switch (i)
+        {
+            case 1:
+                currentPlayerId = player1_id;
+                break;
+            case 2: 
+                currentPlayerId = player2_id;
+                break;
+            case 3: 
+                currentPlayerId = player3_id;
+                break;
+            case 4: 
+                currentPlayerId = player4_id;
+                break;
+        }
+        return currentPlayerId;
+    }
     public void JoinServer(int creator_id, int joining_id, string joining_name)
     {
         var server = ServerlistDictionary[creator_id];

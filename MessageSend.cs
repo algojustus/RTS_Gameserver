@@ -140,4 +140,36 @@ public class MessageSend
         }
         Console.WriteLine("Building created and now broadcasting to other player");
     }
+    
+    public static void SetSettingsForAll(int receiver_id, int players, int villagers, int resources)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.settings))
+        {
+            packet.Write(players);
+            packet.Write(villagers);
+            packet.Write(resources);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
+
+    public static void SetTeamColor(int receiver_id,int player_id)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.teamsettings))
+        {
+            packet.Write(player_id);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
+    public static void BuildingIsBuild(int sender,int receiver_id, int building_id, int multiplier, bool initialized, bool finished)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.building))
+        {
+            packet.Write(sender);
+            packet.Write(building_id);
+            packet.Write(multiplier);  
+            packet.Write(initialized);
+            packet.Write(finished);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
 }
