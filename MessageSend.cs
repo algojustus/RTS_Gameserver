@@ -172,4 +172,14 @@ public class MessageSend
             SendTcpMessage(receiver_id, packet);
         }
     }
+
+    public static void ReadyCheck(int player_id ,int receiver_id, bool ready)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.readycheck))
+        {
+            packet.Write(player_id);
+            packet.Write(ready);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
 }

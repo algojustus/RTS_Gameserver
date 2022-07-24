@@ -144,4 +144,20 @@ public class ServerMessageHandler
         bool finished = packet.ReadBool();
         MessageSend.BuildingIsBuild(sender,receiver_id,building_id,multiplier,initialized,finished);
     }
+    
+    public static void ReceiveReadyCheck(int sender, Packet packet)
+    {
+        int server_id = packet.ReadInt();
+        int player = packet.ReadInt();
+        bool ready = packet.ReadBool();
+
+        int[] playerlist = new int[Client.serverlist.ServerlistDictionary[server_id].maxPlayers];
+        playerlist = Client.serverlist.ServerlistDictionary[server_id].FillPlayerList();
+        foreach (var id in playerlist)
+        {
+            if (id != sender && id != 0)
+                //Console.WriteLine("{0}{1}{2}",player,receiver_id,ready);
+                MessageSend.ReadyCheck(player,id,ready);
+        }
+    }
 }

@@ -63,7 +63,8 @@ internal class RtsServer
             {(int) ClientPackets.spawnBuilding, ServerMessageHandler.PlayerCreatedBuilding},
             {(int) ClientPackets.settings, ServerMessageHandler.SetSettings},
             {(int) ClientPackets.teamsettings, ServerMessageHandler.SetTeamColor},
-            {(int) ClientPackets.building, ServerMessageHandler.PlayerIsBuilding}
+            {(int) ClientPackets.building, ServerMessageHandler.PlayerIsBuilding},
+            {(int) ClientPackets.readycheck, ServerMessageHandler.ReceiveReadyCheck},
         };
     }
 }
