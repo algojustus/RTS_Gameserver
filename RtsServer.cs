@@ -65,6 +65,7 @@ internal class RtsServer
             {(int) ClientPackets.teamsettings, ServerMessageHandler.SetTeamColor},
             {(int) ClientPackets.building, ServerMessageHandler.PlayerIsBuilding},
             {(int) ClientPackets.readycheck, ServerMessageHandler.ReceiveReadyCheck},
+            {(int) ClientPackets.destroyresource, ServerMessageHandler.DestroyResource},
         };
     }
 }

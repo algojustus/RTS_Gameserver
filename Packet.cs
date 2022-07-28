@@ -20,6 +20,7 @@ public enum ServerPackets
     teamsettings,
     building,
     readycheck,
+    destroyresource,
 }
 
 /// <summary>Sent from client to server.</summary>
@@ -39,6 +40,7 @@ public enum ClientPackets
     teamsettings,
     building,
     readycheck,
+    destroyresource,
 }
 
 public class Packet : IDisposable

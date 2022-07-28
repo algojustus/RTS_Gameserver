@@ -182,4 +182,13 @@ public class MessageSend
             SendTcpMessage(receiver_id, packet);
         }
     }
+    
+    public static void DestroyResource(string resource_id, int receiver_id)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.destroyresource))
+        {
+            packet.Write(resource_id);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
 }
