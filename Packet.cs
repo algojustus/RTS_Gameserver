@@ -21,6 +21,7 @@ public enum ServerPackets
     building,
     readycheck,
     destroyresource,
+    projectile,
 }
 
 /// <summary>Sent from client to server.</summary>
@@ -41,6 +42,7 @@ public enum ClientPackets
     building,
     readycheck,
     destroyresource,
+    projectile,
 }
 
 public class Packet : IDisposable

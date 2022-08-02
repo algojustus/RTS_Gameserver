@@ -6,15 +6,16 @@ public class MessageSend
 {
     public static void OnInitConnection(int receiverClient)
     {
-        using (Packet packet = new Packet((int)ServerPackets.welcome))
+        using (Packet packet = new Packet((int) ServerPackets.welcome))
         {
             packet.Write("You were Connected");
             packet.Write(receiverClient);
             SendTcpMessage(receiverClient, packet);
         }
+
         Console.WriteLine("Sending Welcome package");
     }
-    
+
     public static void ServerTransfer(int receiverClient, int oldServerOwner)
     {
         using (Packet packet = new Packet((int) ServerPackets.serverTransfered))
@@ -22,6 +23,7 @@ public class MessageSend
             packet.Write(oldServerOwner);
             SendTcpMessage(receiverClient, packet);
         }
+
         Console.WriteLine("Sending server transfer request");
     }
 
@@ -32,11 +34,13 @@ public class MessageSend
             packet_player1.Write(receiverClient);
             SendTcpMessage(creator_id, packet_player1);
         }
+
         using (Packet packet_player2 = new Packet((int) ServerPackets.gameStarted))
         {
             packet_player2.Write(creator_id);
             SendTcpMessage(receiverClient, packet_player2);
         }
+
         Console.WriteLine("Broadcasting the start of game {0}", creator_id);
     }
 
@@ -65,8 +69,10 @@ public class MessageSend
                 packet.Write(server.server_full);
                 packet.Write(server.currently_ingame);
             }
+
             SendTcpMessage(receiverClient, packet);
         }
+
         Console.WriteLine("Serverlist was requested and send");
     }
 
@@ -115,6 +121,7 @@ public class MessageSend
             packet.Write(unitData.rotation);
             SendTcpMessage(receiverId, packet);
         }
+
         Console.WriteLine("Unit created and now broadcasting to other player");
     }
 
@@ -128,6 +135,7 @@ public class MessageSend
             SendTcpMessage(receiverId, packet);
         }
     }
+
     public static void SendBuildingCreated(int receiverId, BuildingData buildingData)
     {
         using (Packet packet = new Packet((int) ServerPackets.spawnBuilding))
@@ -138,9 +146,10 @@ public class MessageSend
             packet.Write(buildingData.rotation);
             SendTcpMessage(receiverId, packet);
         }
+
         Console.WriteLine("Building created and now broadcasting to other player");
     }
-    
+
     public static void SetSettingsForAll(int receiver_id, int players, int villagers, int resources)
     {
         using (Packet packet = new Packet((int) ServerPackets.settings))
@@ -152,7 +161,7 @@ public class MessageSend
         }
     }
 
-    public static void SetTeamColor(int receiver_id,int player_id)
+    public static void SetTeamColor(int receiver_id, int player_id)
     {
         using (Packet packet = new Packet((int) ServerPackets.teamsettings))
         {
@@ -160,20 +169,22 @@ public class MessageSend
             SendTcpMessage(receiver_id, packet);
         }
     }
-    public static void BuildingIsBuild(int sender,int receiver_id, int building_id, int multiplier, bool initialized, bool finished)
+
+    public static void BuildingIsBuild(int sender, int receiver_id, int building_id, int multiplier, bool initialized,
+        bool finished)
     {
         using (Packet packet = new Packet((int) ServerPackets.building))
         {
             packet.Write(sender);
             packet.Write(building_id);
-            packet.Write(multiplier);  
+            packet.Write(multiplier);
             packet.Write(initialized);
             packet.Write(finished);
             SendTcpMessage(receiver_id, packet);
         }
     }
 
-    public static void ReadyCheck(int player_id ,int receiver_id, bool ready)
+    public static void ReadyCheck(int player_id, int receiver_id, bool ready)
     {
         using (Packet packet = new Packet((int) ServerPackets.readycheck))
         {
@@ -182,12 +193,22 @@ public class MessageSend
             SendTcpMessage(receiver_id, packet);
         }
     }
-    
+
     public static void DestroyResource(string resource_id, int receiver_id)
     {
         using (Packet packet = new Packet((int) ServerPackets.destroyresource))
         {
             packet.Write(resource_id);
+            SendTcpMessage(receiver_id, packet);
+        }
+    }
+
+    public static void SpawnProjectile(int receiver_id, int shooter, int target)
+    {
+        using (Packet packet = new Packet((int) ServerPackets.projectile))
+        {
+            packet.Write(shooter);
+            packet.Write(target);
             SendTcpMessage(receiver_id, packet);
         }
     }

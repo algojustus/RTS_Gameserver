@@ -1,10 +1,13 @@
 ﻿namespace RtsServer;
+
 using System.Threading;
+
 public class StartServer
 {
     private static bool isRunning;
     private static int TicksPerSecond = 30;
-    private static int TicksPerMS = 1000/TicksPerSecond;
+    private static int TicksPerMS = 1000 / TicksPerSecond;
+
     private static void Main(string[] args)
     {
         Thread mainThread = new Thread(MainThread);
@@ -16,7 +19,6 @@ public class StartServer
 
     private static void MainThread()
     {
-        Console.WriteLine("Server running hot");
         DateTime dateTime = DateTime.UtcNow;
         while (isRunning)
         {
@@ -31,6 +33,7 @@ public class StartServer
             }
         }
     }
+
     private static void Update()
     {
         ThreadManager.UpdateMain();

@@ -11,8 +11,9 @@ public class BuildingData
     public int building_hp;
     public int ranged_resistance;
     public int melee_resistance;
-    
-    public BuildingData(int _id, string _prefabname, Vector3 _spawnposition, Quaternion _spawnrota, int hitpoints, int rangedResistance, int meleeResistance)
+
+    public BuildingData(int _id, string _prefabname, Vector3 _spawnposition, Quaternion _spawnrota, int hitpoints,
+        int rangedResistance, int meleeResistance)
     {
         id = _id;
         prefabname = _prefabname;

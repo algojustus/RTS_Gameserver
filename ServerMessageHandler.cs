@@ -106,7 +106,6 @@ public class ServerMessageHandler
     {
         int server_id = packet.ReadInt();
         int player = packet.ReadInt();
-        //Client.serverlist.ServerlistDictionary[server_id].PlayerDictionary[sender].color = player;
         int[] playerlist = new int[Client.serverlist.ServerlistDictionary[server_id].maxPlayers];
         playerlist = Client.serverlist.ServerlistDictionary[server_id].FillPlayerList();
         foreach (var id in playerlist)
@@ -142,9 +141,9 @@ public class ServerMessageHandler
         int multiplier = packet.ReadInt();
         bool initialized = packet.ReadBool();
         bool finished = packet.ReadBool();
-        MessageSend.BuildingIsBuild(sender,receiver_id,building_id,multiplier,initialized,finished);
+        MessageSend.BuildingIsBuild(sender, receiver_id, building_id, multiplier, initialized, finished);
     }
-    
+
     public static void ReceiveReadyCheck(int sender, Packet packet)
     {
         int server_id = packet.ReadInt();
@@ -156,10 +155,10 @@ public class ServerMessageHandler
         foreach (var id in playerlist)
         {
             if (id != sender && id != 0)
-                MessageSend.ReadyCheck(player,id,ready);
+                MessageSend.ReadyCheck(player, id, ready);
         }
     }
-    
+
     public static void DestroyResource(int sender, Packet packet)
     {
         int server_id = packet.ReadInt();
@@ -169,7 +168,23 @@ public class ServerMessageHandler
         foreach (var id in playerlist)
         {
             if (id != sender && id != 0)
-                MessageSend.DestroyResource(resource_id,server_id);
+                MessageSend.DestroyResource(resource_id, server_id);
+        }
+    }
+
+    public static void SpawnProjectile(int sender, Packet packet)
+    {
+        int server_id = packet.ReadInt();
+        int shooterid = packet.ReadInt();
+        int targetid = packet.ReadInt();
+        int[] playerlist = new int[Client.serverlist.ServerlistDictionary[server_id].maxPlayers];
+        playerlist = Client.serverlist.ServerlistDictionary[server_id].FillPlayerList();
+        foreach (var id in playerlist)
+        {
+            if (id != sender && id != 0)
+            {
+                MessageSend.SpawnProjectile(id, shooterid, targetid);
+            }
         }
     }
 }

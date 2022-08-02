@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Net.Sockets;
-using System.Numerics;
+﻿using System.Net.Sockets;
 
 namespace RtsServer;
 
@@ -14,10 +12,11 @@ public class Client
     public class Tcp
     {
         public TcpClient socket;
-        private int id;
-        private NetworkStream _networkStream;
-        private byte[] receiveBuffer;
         private Packet eventPacket;
+        private NetworkStream _networkStream;
+        private int id;
+        private byte[] receiveBuffer;
+        
 
         public Tcp(int _id)
         {
@@ -143,6 +142,5 @@ public class Client
     {
         Console.WriteLine("User Disconnected");
         tcpClient.Disconnect();
-        //playerId = null;
     }
 }
