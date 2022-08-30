@@ -6,12 +6,12 @@ Video mit Features:
 - > 
 
 Verwendete Assets:
-https://fontawesome.com/icons/sword?s=solid
-https://fontawesome.com/icons/shield?s=solid
-https://fontawesome.com/icons/people?s=solid
-https://assetstore.unity.com/packages/3d/vegetation/trees/free-trees-103208
-https://assetstore.unity.com/packages/2d/textures-materials/floors/outdoor-ground-textures-12555
-https://assetstore.unity.com/packages/3d/props/exterior/stone-651
+SchwertIcon - https://fontawesome.com/icons/sword?s=solid
+SchildIcon - https://fontawesome.com/icons/shield?s=solid
+MenschenIcon - https://fontawesome.com/icons/people?s=solid
+Bäume - https://assetstore.unity.com/packages/3d/vegetation/trees/free-trees-103208
+Boden - https://assetstore.unity.com/packages/2d/textures-materials/floors/outdoor-ground-textures-12555
+Steine - https://assetstore.unity.com/packages/3d/props/exterior/stone-651
 
 
 Verwendete Klassen:
